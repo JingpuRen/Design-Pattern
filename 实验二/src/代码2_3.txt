@@ -1,0 +1,80 @@
+// 子系统类Memory(内存类)
+public class Memory {
+    public void check(){
+        System.out.println("内存(Memory)正在检查……");
+    }
+    public void off(){
+        System.out.println("内存(Memory)正在关闭……");
+    }
+}
+
+// 子系统类CPU
+public class CPU {
+    public void run(){
+        System.out.println("CPU正在运行……");
+    }
+    public void off(){
+        System.out.println("CPU正在关闭……");
+    }
+}
+
+// 子系统类HardDisk(硬盘类)
+public class HardDisk {
+    public void read(){
+        System.out.println("硬盘正在读取……");
+    }
+    public void off(){
+        System.out.println("硬盘(HardDisk)正在=关闭……");
+    }
+}
+
+// 子系统类OS(操作系统类)
+public class OS {
+    public void load(){
+        System.out.println("操作系统(OS)正在载入……");
+    }
+    public void off(){
+        System.out.println("操作系统(OS)正在关闭……");
+    }
+}
+
+// 外观类Mainframe
+public class Mainframe {
+    private CPU cpu;
+    private Memory memory;
+    private HardDisk hardDisk;
+    private OS os;
+
+    public Mainframe(){
+        cpu = new CPU();
+        memory = new Memory();
+        hardDisk = new HardDisk();
+        os = new OS();
+    }
+
+    public void on(){
+        memory.check();
+        cpu.run();
+        hardDisk.read();
+        os.load();
+    }
+
+    public void off(){
+        memory.off();
+        cpu.off();
+        hardDisk.off();
+        os.off();
+    }
+}
+
+// 客户端测试类Client
+public class Client {
+    public static void main(String[] args){
+        Mainframe mainframe = new Mainframe();
+        mainframe.on();
+		System.out.println("电脑启动成功……");
+        System.out.println("-------------------");
+        mainframe.off();
+		System.out.println("电脑启动失败……");
+    }
+}

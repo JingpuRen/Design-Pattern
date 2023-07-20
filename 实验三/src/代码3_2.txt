@@ -1,0 +1,65 @@
+// 抽象目标类MySubject
+import java.util.*;
+public abstract class MySubject {
+    protected ArrayList observers = new ArrayList();
+
+    // 注册方法
+    public void attch(MyObserver observer){
+        observers.add(observer);
+    }
+
+    // 注销方法
+    public void detach(MyObserver observer){
+        observers.remove(observer);
+    }
+
+    public abstract void inform();
+}
+
+// 抽象观察者类MyObserver
+public interface MyObserver {
+    void response();
+}
+
+// 具体目标类Price(价格类)
+public class Price extends MySubject{
+    @Override
+    public void inform() {
+        System.out.println("尊敬的各位Vip会员，商品的价格已经发生变动，请知悉");
+        System.out.println("----------------------");
+
+        for(Object obs:observers){
+            ((MyObserver)obs).response();
+        }
+    }
+}
+
+// 具体观察者类VipMember(Vip会员类)
+public class VipMember implements MyObserver{
+	public String name;
+    @Override
+    public void response() {
+        System.out.println("会员" + name + "已收到商品价格变动通知");
+    }
+	public VipMember(String name){
+		this.name = name;
+	}
+}
+
+// 客户端测试类Client
+public class Client {
+    public static void main(String[] args){
+        MySubject price = new Price();
+
+        MyObserver vipMember1,vipMember2;
+        vipMember1 = new VipMember("风耀");
+        vipMember2 = new VipMember("天羽");
+
+        price.attch(vipMember1);
+        price.attch(vipMember2);
+
+        price.inform();
+    }
+}
+
+

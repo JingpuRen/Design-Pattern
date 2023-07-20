@@ -1,0 +1,59 @@
+// 工厂类GraphicsFactory
+public class GraphicsFactory {
+
+    public static Graphics produceGraphics(String type) throws Exception{
+        if(type.equalsIgnoreCase("圆形")){
+            return new Circle();
+        }
+        else if(type.equalsIgnoreCase("矩形")){
+            return new Rectangle();
+        }
+        else if(type.equalsIgnoreCase("正方形")){
+            return new Square();
+        }
+        else{
+            throw new Exception("对不起，暂不能生产该类型图形");
+        }
+    }
+
+}
+
+// 客户端测试类Client
+public class Client {
+
+    public static void main(String[] args) {
+        try
+        {
+            Graphics gra;
+            String brandName = XMLUtil.getBrandName();
+            gra = GraphicsFactory.produceGraphics(brandName);
+            gra.draw();
+            gra.erase();
+        }
+        catch(Exception e)
+        {
+            System.out.println(e.getMessage());
+        }
+    }
+
+}
+
+<?xml version="1.0"?>
+<config>
+    <brandName>圆形</brandName>
+</config>
+
+<?xml version="1.0"?>
+<config>
+    <brandName>矩形</brandName>
+</config>
+
+<?xml version="1.0"?>
+<config>
+    <brandName>正方形</brandName>
+</config>
+
+<?xml version="1.0"?>
+<config>
+    <brandName>菱形</brandName>
+</config>

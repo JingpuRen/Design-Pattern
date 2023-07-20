@@ -1,0 +1,28 @@
+// 抽象主题角色Subject
+public interface Subject {
+    public void run();
+}
+
+// 真实主题角色Application
+public class Application implements Subject{
+    public void run(){
+        System.out.println("应用软件调用成功，正在启动……");
+    }
+}
+
+// 代理主题角色Picture
+public class Picture implements Subject{
+    private Application app = new Application();
+    public void run(){
+        System.out.println("快捷方式正在调用应用软件……");
+        app.run();
+    }
+}
+
+// 客户端测试类Client
+public class Client {
+    public static void main(String[] args){
+        Picture pic = new Picture();
+        pic.run();
+    }
+}

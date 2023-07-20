@@ -1,0 +1,187 @@
+// 实现类接口Gender(性别类)
+public interface Gender {
+    void showGender();
+}
+
+// 具体实现类Man(男人类)
+public class Man implements Gender{
+    public void showGender(){
+        System.out.println("性别：男性");
+    }
+}
+
+// 具体实现类Woman(女人类)
+public class Woman implements Gender{
+    public void showGender(){
+        System.out.println("性别：女性");
+    }
+}
+
+// 实现类接口Race(种族类)
+public interface Race {
+    void showRace();
+}
+
+// 具体实现类Human(人类类)
+public class Human implements Race{
+    public void showRace(){
+        System.out.println("种族：人类");
+    }
+}
+
+// 具体实现类Dwarf(矮人类)
+public class Dwarf implements Race{
+    @Override
+    public void showRace() {
+        System.out.println("种族：矮人");
+    }
+}
+
+// 具体实现类Orc(兽人类)
+public class Orc implements Race{
+    @Override
+    public void showRace() {
+        System.out.println("种族：兽人");
+    }
+}
+
+// 具体实现类Tauren(牛头人类)
+public class Tauren implements Race{
+    @Override
+    public void showRace() {
+        System.out.println("种族：牛头人");
+    }
+}
+
+// 实现类接口Profession(职业类)
+public interface Profession {
+    void showProfession();
+}
+
+// 具体实现类Warrior(战士类)
+public class Warrior implements Profession{
+    @Override
+    public void showProfession() {
+        System.out.println("职业：战士");
+    }
+}
+
+// 具体实现类Mage(法师类)
+public class Mage implements Profession{
+    @Override
+    public void showProfession() {
+        System.out.println("职业：法师");
+    }
+}
+
+// 具体实现类Priest(牧师类)
+public class Priest implements Profession{
+    @Override
+    public void showProfession() {
+        System.out.println("职业：牧师");
+    }
+}
+
+// 具体实现类Hunter(猎人类)
+public class Hunter implements Profession{
+    @Override
+    public void showProfession() {
+        System.out.println("职业：猎人");
+    }
+}
+
+// 角色类Character
+public class Character {
+    protected Gender gender;
+    protected Race race;
+    protected Profession profession;
+
+    public void setGender(Gender gender){
+        this.gender = gender;
+    }
+    public void setRace(Race race){
+        this.race = race;
+    }
+    public void setProfession(Profession profession){
+        this.profession = profession;
+    }
+
+    public void exhibit(){
+        gender.showGender();
+        race.showRace();
+        profession.showProfession();
+    }
+}
+
+// XML操作工具类XMLUtilCharacter
+import javax.xml.parsers.*;
+import org.w3c.dom.*;
+import org.xml.sax.SAXException;
+import java.io.*;
+public class XMLUtilCharacter {
+
+    public static Object getBean(String args){
+        try{
+            DocumentBuilderFactory dFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = dFactory.newDocumentBuilder();
+            Document doc;
+            doc = builder.parse(new File("./src/configCharacter.xml"));
+
+            NodeList n1 = null;
+            Node classNode = null;
+            String cName = null;
+            n1 = doc.getElementsByTagName("className");
+            if(args.equals("gender")){
+                classNode = n1.item(0).getFirstChild();
+            }
+            else if(args.equals("race")){
+                classNode = n1.item(1).getFirstChild();
+            }
+            else if(args.equals("profession")){
+                classNode = n1.item(2).getFirstChild();
+            }
+
+            cName = classNode.getNodeValue();
+            Class c = Class.forName(cName);
+            Object obj = c.newInstance();
+            return obj;
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            return null;
+        }
+    }
+}
+
+// 客户端测试类Client
+public class Client {
+    public static void main(String[] args){
+        Gender gender;
+        Race race;
+        Profession profession;
+
+        Character character = new Character();
+
+        gender = (Gender) XMLUtilCharacter.getBean("gender");
+        race = (Race) XMLUtilCharacter.getBean("race");
+        profession = (Profession) XMLUtilCharacter.getBean("profession");
+
+        character.setGender(gender);
+        character.setRace(race);
+        character.setProfession(profession);
+
+        System.out.println("创建游戏角色中……");
+        System.out.println("游戏角色创建成功，属性为：");
+
+        character.exhibit();
+
+    }
+}
+
+<?xml version="1.0"?>
+<config>
+    <className>Man</className>
+    <className>Human</className>
+    <className>Warrior</className>
+</config>

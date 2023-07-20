@@ -1,0 +1,202 @@
+// 抽象产品类Chair
+public interface Chair {
+
+    public void seat();
+
+}
+// 具体产品类ChineseChair
+public class ChineseChair implements Chair{
+
+    public void seat(){
+        System.out.println("中式(Chinese)椅子生产成功，请落座……");
+    }
+}
+// 具体产品类ModernChair
+public class ModernChair implements Chair{
+
+    public void seat(){
+
+        System.out.println("现代(Modern)椅子生产成功，请落座……");
+    }
+}
+// 具体产品类VictorianChair
+public class VictorianChair implements Chair{
+
+    public void seat(){
+
+        System.out.println("维多利亚(Victorian)椅子生产成功，请落座……");
+    }
+}
+
+// 抽象产品类Sofa
+public interface Sofa {
+    public void seat();
+}
+// 具体产品类ChineseSofa
+public class ChineseSofa implements Sofa{
+
+    public void seat(){
+
+        System.out.println("中式(Chinese)沙发生产成功，请落座……");
+    }
+}
+// 具体产品类ModernSofa
+public class ModernSofa implements Sofa{
+
+    public void seat(){
+
+        System.out.println("现代(Modern)沙发生产成功，请落座……");
+    }
+}
+// 具体产品类VictorianSofa
+public class VictorianSofa implements Sofa{
+
+    public void seat(){
+        System.out.println("维多利亚(Victorian)沙发生产成功，请落座……");
+    }
+}
+
+// 抽象产品类Table
+public interface Table {
+    public void seat();
+}
+// 具体产品类ChineseTable
+public class ChineseTable implements Table{
+
+    public void seat(){
+        System.out.println("中式(Chinese)桌子生产成功，请落座……");
+    }
+}
+// 具体产品类ModernTable
+public class ModernTable implements Table{
+
+    public void seat(){
+        System.out.println("现代(Modern)桌子生产成功，请落座……");
+    }
+}
+// 具体产品类VictorianTable
+public class VictorianTable implements Table{
+
+    public void seat(){
+
+        System.out.println("维多利亚(Victorian)桌子生产成功，请落座……");
+    }
+}
+
+// 抽象工厂类HomeFactory
+public interface HomeFactory {
+    public Sofa produceSofa();
+    public Table produceTable();
+    public Chair produceChair();
+}
+// 具体工厂类ChineseHomeFactory
+public class ChineseHomeFactory implements HomeFactory{
+    public Chair produceChair(){
+        return new ChineseChair();
+    }
+
+    public Sofa produceSofa(){
+        return new ChineseSofa();
+    }
+
+    public Table produceTable(){
+        return new ChineseTable();
+    }
+}
+// 具体工厂类ModernHomeFactory
+public class ModernHomeFactory implements HomeFactory{
+
+    public Chair produceChair(){
+        return new ModernChair();
+    }
+
+    public Sofa produceSofa(){
+        return new ModernSofa();
+    }
+
+    public Table produceTable(){
+        return new ModernTable();
+    }
+}
+// 具体工厂类VictorianHomeFactory
+public class VictorianHomeFactory implements HomeFactory{
+    public Chair produceChair(){
+        return new VictorianChair();
+    }
+
+    public Sofa produceSofa(){
+        return new VictorianSofa();
+    }
+
+    public Table produceTable(){
+        return new VictorianTable();
+    }
+}
+
+// 专门的工具类XMLUtil
+import javax.xml.parsers.*;
+import org.w3c.dom.*;
+import org.xml.sax.SAXException;
+import java.io.*;
+public class XMLUtil {
+
+    public static Object getBean(){
+
+        try{
+            DocumentBuilderFactory dFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = dFactory.newDocumentBuilder();
+            Document doc;
+            doc = builder.parse(new File("./src/config.xml"));
+
+
+            NodeList nl = doc.getElementsByTagName("className");
+            Node classNode = nl.item(0).getFirstChild();
+            String cName = classNode.getNodeValue();
+
+            Class c = Class.forName(cName);
+            Object obj = c.newInstance();
+            return obj;
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            return null;
+        }
+
+    }
+
+}
+
+<?xml version = "1.0"?>
+<config>
+    <className>VictorianHomeFactory</className>
+</config>
+
+// 客户端测试类Client
+public class Client {
+
+    public static void main (String[] args){
+
+        try{
+            HomeFactory homeFactory1;
+            Sofa sofa1;
+            Table table1;
+            Chair chair1;
+
+            homeFactory1 = (HomeFactory) XMLUtil.getBean();
+
+            sofa1 = homeFactory1.produceSofa();
+            sofa1.seat();
+
+            chair1 = homeFactory1.produceChair();
+            chair1.seat();
+
+            table1 = homeFactory1.produceTable();
+            table1.seat();
+        }
+        catch(Exception e){
+            System.out.println(e.getMessage());
+        }
+
+    }
+
+}

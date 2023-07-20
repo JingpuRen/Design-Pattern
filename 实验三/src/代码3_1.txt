@@ -1,0 +1,137 @@
+// 请求类Commodity(物资商品类)
+public class Commodity {
+    private double money;
+    public Commodity(double money){
+        this.money = money;
+    }
+    public void setMoney(double money){
+        this.money = money;
+    }
+    public double getMoney(){
+        return (this.money);
+    }
+}
+
+// 抽象处理者类Leader(领导类)
+public abstract class Leader {
+    protected String name;
+    protected Leader successor;
+    public Leader(String name){
+        this.name = name;
+    }
+    public void setSuccessor(Leader successor){
+        this.successor = successor;
+    }
+    public abstract void handleRequest(Commodity commodityRequest);
+}
+
+// 具体处理类Director(主任类)
+public class Director extends Leader{
+    public Director(String name){
+        super(name);
+    }
+    public void handleRequest(Commodity commodityRequest){
+        if(commodityRequest.getMoney() <= 10000){
+            System.out.println("主任" + name + "审批物资采购");
+        }
+        else{
+            if(this.successor != null){
+                this.successor.handleRequest(commodityRequest);
+            }
+        }
+    }
+}
+
+// 具体处理者SectionManager(部门经理类)
+public class SectionManager extends Leader{
+    public SectionManager(String name){
+        super(name);
+    }
+    public void handleRequest(Commodity commodityRequest){
+        if(commodityRequest.getMoney() <= 50000){
+            System.out.println("部门经理" + name + "审批物资采购");
+        }
+        else{
+            if(this.successor != null){
+                this.successor.handleRequest(commodityRequest);
+            }
+        }
+    }
+}
+
+// 具体处理者VicePresident(副总经理类)
+public class VicePresident extends Leader{
+    public VicePresident(String name){
+        super(name);
+    }
+
+    @Override
+    public void handleRequest(Commodity commodityRequest) {
+        if(commodityRequest.getMoney() <= 100000){
+            System.out.println("副总经理" + name + "审批物资采购");
+        }
+        else{
+            if(this.successor != null){
+                this.successor.handleRequest(commodityRequest);
+            }
+        }
+    }
+
+}
+
+// 具体处理者GeneralManager(总经理类)
+public class GeneralManager extends Leader{
+    public GeneralManager(String name){
+        super(name);
+    }
+
+    @Override
+    public void handleRequest(Commodity commodityRequest) {
+        if(commodityRequest.getMoney() <= 200000){
+            System.out.println("总经理" + name + "审批物资采购");
+        }
+        else{
+            System.out.println("物资采购所需资金过多，需要集体开会解决");
+        }
+    }
+}
+
+// 客户端测试类Client
+import java.util.ConcurrentModificationException;
+
+public class Client {
+    public static void main(String[] args){
+        Leader director,sectionManager,viceManager,generalManager;
+        director = new Director("王明");
+        sectionManager = new SectionManager("赵强");
+        viceManager = new VicePresident("李波");
+        generalManager = new GeneralManager("天峰");
+
+        director.setSuccessor(sectionManager);
+        sectionManager.setSuccessor(viceManager);
+        viceManager.setSuccessor(generalManager);
+
+        Commodity commodityRequest1 = new Commodity(8000);
+        director.handleRequest(commodityRequest1);
+
+        System.out.println("------------------");
+
+        Commodity commodityRequest2 = new Commodity(12000);
+        director.handleRequest(commodityRequest2);
+
+        System.out.println("------------------");
+
+        Commodity commodityRequest3 = new Commodity(78000);
+        director.handleRequest(commodityRequest3);
+
+        System.out.println("------------------");
+
+        Commodity commodityRequest4 = new Commodity(150000);
+        director.handleRequest(commodityRequest4);
+
+        System.out.println("------------------");
+
+        Commodity commodityRequest5 = new Commodity(210000);
+        director.handleRequest(commodityRequest5);
+    }
+}

@@ -1,0 +1,84 @@
+// 目标抽象类Application
+public interface Application {
+    public void gain_data();
+}
+
+// 适配者类DataSourceA
+public class DataSourceA {
+    public void get_data() {
+        System.out.println("正在从数据源A获取信息……");
+    }
+}
+
+// 适配者类DataSourceB
+public class DataSourceB {
+    public void fetch_data(){
+        System.out.println("正在从数据源B获取数据……");
+    }
+}
+
+// 适配器类DataSourceAAdapter
+public class DataSourceAAdapter extends DataSourceA implements Application{
+    public void gain_data(){
+        System.out.println("软件获取数据：");
+        super.get_data();
+    }
+}
+
+// 适配器类DataSourceBAdapter
+public class DataSourceBAdapter extends DataSourceB implements Application{
+    public void gain_data(){
+        System.out.println("软件获取数据：");
+        super.fetch_data();
+    }
+}
+
+// 专门的工具类XMLUtil
+import javax.xml.parsers.*;
+import org.w3c.dom.*;
+import org.xml.sax.SAXException;
+import java.io.*;
+public class XMLUtil {
+
+    public static Object getBean(){
+
+        try{
+            DocumentBuilderFactory dFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = dFactory.newDocumentBuilder();
+            Document doc;
+            doc = builder.parse(new File("./src/config.xml"));
+
+
+            NodeList nl = doc.getElementsByTagName("className");
+            Node classNode = nl.item(0).getFirstChild();
+            String cName = classNode.getNodeValue();
+
+            Class c = Class.forName(cName);
+            Object obj = c.newInstance();
+            return obj;
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            return null;
+        }
+
+    }
+}
+
+// 客户端测试类Client
+public class Client {
+    public static void main (String[] args){
+        Application app = (Application) XMLUtil.getBean();
+        app.gain_data();
+    }
+}
+
+<?xml version="1.0"?>
+<config>
+    <className>DataSourceBAdapter</className>
+</config>
+
+<?xml version="1.0"?>
+<config>
+    <className>DataSourceAAdapter</className>
+</config>

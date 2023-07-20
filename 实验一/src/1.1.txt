@@ -1,0 +1,85 @@
+// 抽象产品类Graphics
+public abstract class Graphics {
+
+    public abstract void draw(); // 公共业务方法draw()
+    public abstract void erase(); // 公共业务方法erase()
+}
+
+
+// 具体产品类Circle
+public class Circle extends Graphics{
+
+    public void draw(){
+        System.out.println("圆形绘制中……");
+    }
+
+    public void erase(){
+        System.out.println("圆形擦除中……");
+    }
+
+}
+
+// 具体产品类Rectangle
+public class Rectangle extends Graphics{
+
+    public void draw(){
+        System.out.println("矩形绘制中……");
+    }
+
+    public void erase(){
+        System.out.println("矩形擦除中……");
+    }
+
+}
+
+// 具体产品类Square
+public class Square extends Graphics{
+
+    public void draw(){
+        System.out.println("正方形绘制中……");
+    }
+
+    public void erase(){
+        System.out.println("正方形擦除中……");
+    }
+
+}
+
+// 工厂类GraphicsFactory
+public class GraphicsFactory {
+
+    public Graphics produceGraphics(String type){
+        if(type == "圆形"){
+            return new Circle();
+        }
+        else if(type == "矩形"){
+            return new Rectangle();
+        }
+        else{
+            return new Square();
+        }
+    }
+
+}
+
+// 客户端测试类
+public class Client {
+
+    public static void main(String[] args) {
+        Graphics circle = GraphicsFactory.produceGraphics("圆形");
+        Graphics rectangle = GraphicsFactory.produceGraphics("矩形");
+        Graphics square = GraphicsFactory.produceGraphics("正方形");
+
+        circle.draw();
+        circle.erase();
+
+        rectangle.draw();
+        rectangle.erase();
+
+        square.draw();
+        square.erase();
+    }
+
+}
+
+

@@ -1,0 +1,185 @@
+// 产品类MusicVideoPlayer(音视频播放器类)
+public class MusicVideoPlayer {
+    private String menu;
+    private String playList;
+    private String window;
+    private String control;
+    private String collectList;
+
+    public String getMenu(){
+        return this.menu;
+    }
+    public String getPlayList(){
+        return this.playList;
+    }
+    public String getWindow(){
+        return this.window;
+    }
+    public String getControl(){
+        return this.control;
+    }
+    public String getCollectList(){
+        return this.collectList;
+    }
+
+    public void setMenu(String menu){
+        this.menu = menu;
+    }
+    public void setPlayList(String playList){
+        this.playList = playList;
+    }
+    public void setWindow(String window){
+        this.window = window;
+    }
+    public void setControl(String control){
+        this.control = control;
+    }
+    public void setCollectList(String collectList){
+        this.collectList = collectList;
+    }
+}
+
+// 抽象建造者类MusicVideoPlayerBuilder
+public abstract class MusicVideoPlayerBuilder {
+    protected MusicVideoPlayer musicVideoPlayer = new MusicVideoPlayer();
+
+    public abstract void buildMenu();
+    public abstract void buildPlayList();
+    public abstract void buildWindow();
+    public abstract void buildControl();
+    public abstract void buildCollectList();
+
+    public MusicVideoPlayer getMusicVideoPlayer(){
+        return musicVideoPlayer;
+    }
+}
+
+// 具体建造者类FullModeBuilder
+public class FullModeBuilder extends MusicVideoPlayerBuilder{
+    public void buildMenu(){
+        musicVideoPlayer.setMenu("显示菜单中");
+    }
+    public void buildPlayList(){
+        musicVideoPlayer.setPlayList("显示播放列表中");
+    }
+    public void buildWindow(){
+        musicVideoPlayer.setWindow("显示主窗口中");
+    }
+    public void buildControl(){
+        musicVideoPlayer.setControl("显示控制条中");
+    }
+    public void buildCollectList(){
+    }
+}
+
+// 具体建造者类MemoryModeBuilder
+public class MemoryModeBuilder extends MusicVideoPlayerBuilder{
+    public void buildMenu(){
+    }
+    public void buildPlayList(){
+    }
+    public void buildWindow(){
+        musicVideoPlayer.setWindow("显示主窗口中");
+    }
+    public void buildControl(){
+        musicVideoPlayer.setControl("显示控制条中");
+    }
+    public void buildCollectList(){
+        musicVideoPlayer.setCollectList("显示收藏列表中");
+    }
+}
+
+// 具体建造者类SimpleModeBuilder
+public class SimpleModeBuilder extends MusicVideoPlayerBuilder{
+    public void buildMenu(){
+    }
+    public void buildPlayList(){
+    }
+    public void buildWindow(){
+        musicVideoPlayer.setWindow("显示主窗口中");
+    }
+    public void buildControl(){
+        musicVideoPlayer.setControl("显示控制条中");
+    }
+    public void buildCollectList(){
+    }
+}
+
+// 指挥者类Director
+public class Director {
+    MusicVideoPlayerBuilder mvp;
+
+    public void setMusicVideoPlayer(MusicVideoPlayerBuilder mvp){
+        this.mvp = mvp; // 指定模式
+    }
+
+    public MusicVideoPlayer construct(){
+        mvp.buildMenu();
+        mvp.buildCollectList();
+        mvp.buildControl();
+        mvp.buildPlayList();
+        mvp.buildWindow();
+
+        return mvp.getMusicVideoPlayer();
+    }
+
+}
+
+// 专门的工具类XMLUtil
+import javax.xml.parsers.*;
+import org.w3c.dom.*;
+import org.xml.sax.SAXException;
+import java.io.*;
+public class XMLUtil {
+
+    public static Object getBean(){
+
+        try{
+            DocumentBuilderFactory dFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = dFactory.newDocumentBuilder();
+            Document doc;
+            doc = builder.parse(new File("./src/config.xml"));
+
+
+            NodeList nl = doc.getElementsByTagName("className");
+            Node classNode = nl.item(0).getFirstChild();
+            String cName = classNode.getNodeValue();
+
+            Class c = Class.forName(cName);
+            Object obj = c.newInstance();
+            return obj;
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            return null;
+        }
+
+    }
+}
+
+// 客户端测试类Client
+public class Client {
+    public static void main (String[] args){
+        // 确定音视频播放软件的显示模式
+        MusicVideoPlayerBuilder mvp = (MusicVideoPlayerBuilder) XMLUtil.getBean();
+        // 创建指挥者
+        Director dr = new Director();
+        // 指挥者准备模式
+        dr.setMusicVideoPlayer(mvp);
+        // 客户获得相应显示模式的音视频播放软件
+        MusicVideoPlayer player = dr.construct();
+
+        System.out.println("-----运行指定的音视频显示模式-----");
+        System.out.println("----当前的显示模式为：记忆模式----"); // 根据具体显示模式对此进行更改
+        System.out.println("收藏列表显示情况：" + player.getCollectList());
+        System.out.println("控制条显示情况：" + player.getControl());
+        System.out.println("菜单显示情况：" + player.getMenu());
+        System.out.println("主窗口显示情况：" + player.getWindow());
+        System.out.println("播放列表显示情况：" + player.getPlayList());
+    }
+}
+
+<?xml version="1.0"?>
+<config>
+    <className>MemoryModeBuilder</className>
+</config>

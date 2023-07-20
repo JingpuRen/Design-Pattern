@@ -1,0 +1,87 @@
+// 抽象策略类Discount(抽象折扣类)
+public interface Discount {
+    public double discount(double money,int cnt);
+}
+
+// 具体策略类ComputerBookDiscount(计算机图书折扣类)
+public class ComputerBookDiscount implements Discount{
+    @Override
+    public double discount(double money,int cnt) {
+        return money * 0.9 * cnt;
+    }
+}
+
+// 具体策略类ToolBookDiscount(工具书折扣类)
+public class ToolBookDiscount implements Discount{
+    @Override
+    public double discount(double money,int cnt) {
+        return (money - 2) * cnt;
+    }
+}
+
+// 具体策略类NovelBookDiscount(小说图书折扣类)
+public class NovelBookDiscount implements Discount{
+    @Override
+    public double discount(double money,int cnt) {
+        int num = (int)(money * cnt / 100);
+        return (money * cnt - num * 10);
+    }
+}
+
+// 环境类Book(图书折扣处理类)
+public class Book {
+    private Discount dc;
+    public double discount(double money,int cnt){
+        return dc.discount(money,cnt);
+    }
+    public void setDc(Discount dc){
+        this.dc = dc;
+    }
+}
+
+// 客户端测试类Client
+import java.util.Scanner;
+public class Client {
+    public static void main(String[] args){
+        double money;
+
+        Scanner input = new Scanner(System.in);
+
+        double result;
+
+        Book book = new Book();
+
+        Discount discount1 = new ComputerBookDiscount();
+        Discount discount2 = new NovelBookDiscount();
+        Discount discount3 = new ToolBookDiscount();
+
+        book.setDc(discount1);
+        System.out.println("请输入每本计算机图书的价格和要买的本数");
+        double moneyOfComputerBook = input.nextDouble(); // 由用户设立每本计算机图书的价钱
+        int cnt1 = input.nextInt(); // 读入用户要买的计算机图书的本数
+        System.out.println("计算机图书每本的价格是:" + moneyOfComputerBook + ",要买的本数是" + cnt1);
+        result = book.discount(moneyOfComputerBook,cnt1);
+        System.out.println("计算机图书应付金额为:" + result);
+
+        System.out.println("----------------");
+
+        book.setDc(discount2);
+        System.out.println("请输入每本小说图书的价格和要买的本数");
+        double moneyOfNovelBook = input.nextDouble(); // 由用户设立每本小说图书的价钱
+        int cnt2 = input.nextInt(); // 读入用户要买的小说图书的本数
+        System.out.println("小说图书每本的价格是:" + moneyOfNovelBook + ",要买的本数是" + cnt2);
+        result = book.discount(moneyOfNovelBook,cnt2);
+        System.out.println("小说图书应付金额为:" + result);
+
+        System.out.println("----------------");
+
+        book.setDc(discount3);
+        System.out.println("请输入每本工具类图书的价格和要买的本数");
+        double moneyOfToolBook = input.nextDouble(); // 由用户设立每本工具类图书的价钱
+        int cnt3 = input.nextInt(); // 读入用户要买的工具类图书的本数
+        System.out.println("工具类图书每本的价格是:" + moneyOfToolBook + ",要买的本数是" + cnt3);
+        result = book.discount(moneyOfToolBook,cnt3);
+        System.out.println("工具类图书应付金额为:" + result);
+    }
+}
+

@@ -1,0 +1,189 @@
+// 抽象类Character(角色类)
+public abstract class Character {
+    protected Race race;
+    public void setRace(Race race){
+        this.race = race;
+    }
+    public abstract void create(String name);
+}
+
+// 扩充抽象类ManCharacter(男人角色类)
+public class ManCharacter extends Character{
+    @Override
+    public void create(String name) {
+        String gender = "男";
+        this.race.showRace(name,gender);
+    }
+}
+
+// 扩充抽象类WomanCharacter(女人角色类)
+public class WomanCharacter extends Character{
+    @Override
+    public void create(String name) {
+        String gender = "女";
+        this.race.showRace(name,gender);
+    }
+}
+
+// 抽象类Race(种族类，同时也是Character的实现类)
+public abstract class Race {
+    protected Profession pro;
+    public void setPro(Profession pro){
+        this.pro = pro;
+    }
+    public abstract void showRace(String name,String gender);
+}
+
+// 具体实现类Human(人类类)
+public class Human extends Race{
+    public void showRace(String name,String gender) {
+        String race = "人类";
+        this.pro.showPro(name,gender,race);
+    }
+}
+
+// 具体实现类Dwarf(矮人类)
+public class Dwarf extends Race{
+    public void showRace(String name,String gender){
+        String race = "矮人";
+        this.pro.showPro(name,gender,race);
+    }
+}
+
+// 具体实现类Orc(兽人类)
+public class Orc extends Race{
+    public void showRace(String name,String gender){
+        String race = "兽人";
+        this.pro.showPro(name,gender,race);
+    }
+}
+
+// 具体实现类Tauren(牛头人类)
+public class Tauren extends Race{
+    public void showRace(String name,String gender){
+        String race = "牛头人";
+        this.pro.showPro(name,gender,race);
+    }
+}
+
+// 实现类接口Profession(职业类)
+public interface Profession {
+    public void showPro(String name,String gender,String race);
+}
+
+// 具体实现类Warrior(战士类)
+public class Warrior implements Profession{
+    @Override
+    public void showPro(String name,String gender,String race) {
+        String pro = "战士";
+        System.out.println("【姓名】:" + name);
+        System.out.println("【性别】:" + gender);
+        System.out.println("【种族】:" + race);
+        System.out.println("【职业】:" + pro);
+    }
+}
+
+// 具体实现类Mage(法师类)
+public class Mage implements Profession{
+    @Override
+    public void showPro(String name,String gender,String race) {
+        String pro = "法师";
+        System.out.println("【姓名】:" + name);
+        System.out.println("【性别】:" + gender);
+        System.out.println("【种族】:" + race);
+        System.out.println("【职业】:" + pro);
+    }
+}
+
+// 具体实现类Priest(牧师类)
+public class Priest implements Profession{
+    @Override
+    public void showPro(String name,String gender,String race) {
+        String pro = "牧师";
+        System.out.println("【姓名】:" + name);
+        System.out.println("【性别】:" + gender);
+        System.out.println("【种族】:" + race);
+        System.out.println("【职业】:" + pro);
+    }
+}
+
+// 具体实现类Hunter(猎人类)
+public class Hunter implements Profession{
+    @Override
+    public void showPro(String name,String gender,String race) {
+        String pro = "猎人类";
+        System.out.println("【姓名】:" + name);
+        System.out.println("【性别】:" + gender);
+        System.out.println("【种族】:" + race);
+        System.out.println("【职业】:" + pro);
+    }
+}
+
+// XML操作工具类XMLUtilCharacter
+import javax.xml.parsers.*;
+import org.w3c.dom.*;
+import org.xml.sax.SAXException;
+import java.io.*;
+public class XMLUtilCharacter {
+
+    public static Object getBean(String args){
+        try{
+            DocumentBuilderFactory dFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = dFactory.newDocumentBuilder();
+            Document doc;
+            doc = builder.parse(new File("./src/configCharacter.xml"));
+
+            NodeList n1 = null;
+            Node classNode = null;
+            String cName = null;
+            n1 = doc.getElementsByTagName("className");
+            if(args.equals("character")){
+                classNode = n1.item(0).getFirstChild();
+            }
+            else if(args.equals("race")){
+                classNode = n1.item(1).getFirstChild();
+            }
+            else if(args.equals("profession")){
+                classNode = n1.item(2).getFirstChild();
+            }
+
+            cName = classNode.getNodeValue();
+            Class c = Class.forName(cName);
+            Object obj = c.newInstance();
+            return obj;
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            return null;
+        }
+    }
+}
+
+// 客户端测试类Client
+public class Client {
+    public static void main(String[] args){
+        Race race;
+        Profession pro;
+        Character character;
+
+        race = (Race)XMLUtilCharacter.getBean("race");
+        pro = (Profession) XMLUtilCharacter.getBean("profession");
+        character = (Character) XMLUtilCharacter.getBean("character");
+
+        race.setPro(pro);
+        character.setRace(race);
+
+        System.out.println("创建游戏角色中……");
+        System.out.println("游戏角色创建成功，属性为：");
+
+        character.create("风耀");
+    }
+}
+
+<?xml version="1.0"?>
+<config>
+    <className>ManCharacter</className>
+    <className>Human</className>
+    <className>Warrior</className>
+</config>

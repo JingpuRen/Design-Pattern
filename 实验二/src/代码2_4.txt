@@ -1,0 +1,89 @@
+// 抽象构件类MyElement(抽象类)
+public abstract class MyElement {
+    public abstract void kill();
+}
+
+// 叶子构件类ImageFile(图片文件类)
+public class ImageFile extends MyElement{
+    private String name;
+    public ImageFile(String name){
+        this.name = name;
+    }
+    public void kill(){
+        System.out.println("正在对图片文件" + name + "进行杀毒……");
+    }
+}
+
+// 叶子构件类TextFile(文本文件类)
+public class TextFile extends MyElement{
+    private String name;
+    public TextFile(String name){
+        this.name = name;
+    }
+    public void kill(){
+        System.out.println("正在对文本文件" + name + "进行杀毒……");
+    }
+}
+
+// 叶子构件类VideoFile(视频文件类)
+public class VideoFile extends MyElement{
+    private String name;
+    public VideoFile(String name){
+        this.name = name;
+    }
+    public void kill(){
+        System.out.println("正在对视频文件" + name + "进行杀毒……");
+    }
+}
+
+// 容器构件类Folder(文件夹类)
+import java.util.ArrayList;
+public class Folder extends MyElement{
+    private ArrayList<MyElement> list = new ArrayList<MyElement>();
+    private String name;
+    public Folder(String name){
+        this.name = name;
+    }
+    public void add(MyElement element){
+        list.add(element);
+    }
+    public void remove(MyElement element){
+        list.remove(element);
+    }
+    public MyElement getChild(int index){
+        return (MyElement)list.get(index);
+    }
+    public void kill(){
+        System.out.println("正在对" + name + "文件进行杀毒……");
+        for(Object object : list){
+            ((MyElement)object).kill();
+        }
+    }
+}
+
+// 客户端测试类Client
+public class Client {
+    public static void main(String[] args){
+        MyElement obj1,obj2,obj3;
+        Folder folder,folder1,folder2,folder3;
+
+        obj1 = new ImageFile("人脸.png");
+        obj2 = new TextFile("姓名.txt");
+        obj3 = new VideoFile("大笑.gif");
+
+        folder = new Folder("我的文件夹");
+        folder1 = new Folder("图片文件夹");
+        folder2 = new Folder("文本文件夹");
+        folder3 = new Folder("视频文件夹");
+
+        folder.add(folder1);
+        folder.add(folder2);
+        folder.add(folder3);
+
+        folder1.add(obj1);
+        folder2.add(obj2);
+        folder3.add(obj3);
+
+        folder.kill();
+    }
+}

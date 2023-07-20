@@ -1,0 +1,78 @@
+// 抽象原型类Object
+public class Object {
+    @Override
+    protected native java.lang.Object clone() throws CloneNotSupportedException;
+}
+
+// 具体原型类Character
+public class Character implements Cloneable{
+    private String name;
+    private String sex;
+    private String race;
+    private String profession;
+
+    public Character(String name,String sex,String race,String profession){
+        this.name = name;
+        this.sex = sex;
+        this.race = race;
+        this.profession = profession;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getSex() {
+        return sex;
+    }
+
+    public String getProfession() {
+        return profession;
+    }
+
+    public String getRace() {
+        return race;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setSex(String sex) {
+        this.sex = sex;
+    }
+
+    public void setRace(String race) {
+        this.race = race;
+    }
+
+    public void setProfession(String profession) {
+        this.profession = profession;
+    }
+
+    public Character clone(){
+        Character cpCharacter = null;
+        try{
+            cpCharacter = (Character) super.clone();
+        }
+        catch(CloneNotSupportedException e){
+        }
+        return cpCharacter;
+    }
+}
+
+// 客户端测试类Client
+public class Client {
+    public static void main (String[] args){
+        Character ch1,ch2;
+
+        ch1 = new Character("风耀","男","白虎族","战神");
+
+        System.out.println("姓名：" + ch1.getName() + ",性别：" + ch1.getSex() + ",种族：" + ch1.getRace() + ",职业：" + ch1.getProfession());
+
+        ch2 = ch1.clone();
+        ch2.setName("天羽");
+        ch2.setSex("女");
+        System.out.println("姓名：" + ch2.getName() + ",性别：" + ch2.getSex() + ",种族：" + ch2.getRace() + ",职业：" + ch2.getProfession());
+    }
+}
